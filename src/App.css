@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #e5e5f7;
+
+  background: rgb(158,158,158);
+  background: linear-gradient(159deg, rgba(158,158,158,1) 26%, rgba(96,125,139,1) 100%);
+}
+
+.nested-row {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.input-group {
+  justify-content: center;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.App {
+  display: grid;
+  justify-content: center;
+}
+
+.card.barbell-mate {
+  width: 100%;
+  max-width: 800px;
+  min-width: 300px;
+}
+
+.plate {
+  min-width: 25px;
+  height: 70px;
+  display: grid;
+  align-content: center;
+  font-weight: bold;
+  padding: 0px;
+  border: 1px solid rgba(158,158,158,1);
+}
+
+.plate.small {
+  width: 15px;
+  height: 35px;
+}
+
+.plate.red {
+  background-color: #FB0D1B;
+}
+.plate.blue {
+  background-color: #0B24FB;
+}
+.plate.yellow {
+  background-color: #FFFD38;
+}
+.plate.green {
+  background-color: #0C7F12;
+}
+.plate.white {
+  background-color: #FFF;
+}
+
+.left-plates {
+  justify-content: flex-end;
+}
+
+.total-weight {
+  display: grid;
+  align-content: center;
+  background-color: rgba(255,255,255,0.4);
+}
+
+.row.barbell-row {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  
+
+  background-size: 100% 10px;
+  background-repeat: no-repeat;
+  background-position: 50% 50%; /*place it in the middle */
+  background-image:  linear-gradient(to right, #666666, #444444);
+}
