@@ -1,11 +1,17 @@
 import { useState, useMemo } from 'react'
 import { Row, Col, ToggleButton, Form, InputGroup, Container, Stack, Card } from 'react-bootstrap';
-import { Genders, Units, OlympicPlate, OlympicPlates} from './TypesAndEnums';
+import { Genders, Units, OlympicPlate, OlympicPlates} from './constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Converter } from './util';
 import { faDumbbell, faVenusMars } from '@fortawesome/free-solid-svg-icons'
+import { Plates } from './components/Plates';
 import './App.css'
 
 const App = () => {
+  const [targetWeight, setTargetWeight] = useState(100.0);
+  const [gender, setGender] = useState(0);
+  const [unit, setUnit] = useState(0);
+
   const sortedPlates : OlympicPlate[] = useMemo(() => {
     return OlympicPlates.sort((l, r) => {
       if(l.value > r.value) return -1;
@@ -14,18 +20,14 @@ const App = () => {
     })
   }, [OlympicPlates]);
 
-  const [targetWeight, setTargetWeight] = useState(100.0);
-  const [gender, setGender] = useState(0);
-  const [unit, setUnit] = useState(0);
-
   const barbellWeight : number = useMemo(() => gender === 0? 20 : 15, [gender]);
-  
-  const eachSidePlates = useMemo(() => {
-    const target = unit === 0? targetWeight : targetWeight / 2.2;
 
-    if(target <= barbellWeight) return [];
+  const targetWeightInKg : number = useMemo(() => unit === 0? targetWeight : Converter.LbsToKgs(targetWeight), [targetWeight, unit]);
+  
+  const eachSidePlates: OlympicPlate[] = useMemo(() => {
+    if(targetWeightInKg <= barbellWeight) return [];
     
-    const eachSide = (target - barbellWeight) / 2;
+    const eachSide = (targetWeightInKg - barbellWeight) / 2;
     
     const mountedPlates : OlympicPlate[] = [];
     let mountedTotal = 0;
@@ -47,14 +49,15 @@ const App = () => {
     }
 
     return mountedPlates;
-  }, [targetWeight, unit, gender]);
+  }, [targetWeightInKg, gender]);
 
   const totalMounted : number = useMemo(() => {
-    return eachSidePlates.length > 0 ? (eachSidePlates.map(p => p.value).reduce((acc, curr) => acc + curr) * 2) + barbellWeight : barbellWeight;
-  }, [eachSidePlates]);
+    const mountedInKg = eachSidePlates.length > 0 ? (eachSidePlates.map(p => p.value).reduce((acc, curr) => acc + curr) * 2) + barbellWeight : barbellWeight;
+    return unit === 0? mountedInKg : Converter.KgsToLbs(mountedInKg);
+  }, [eachSidePlates, unit]);
 
   const correctMount : boolean = useMemo(() => {
-    const target = unit === 0? targetWeight : targetWeight / 2.2;
+    const target = unit === 0? targetWeight : Converter.LbsToKgs(targetWeight);
     console.log(target, totalMounted);
     return Math.round(totalMounted) === Math.round(target);
   }, [unit, eachSidePlates]);
@@ -130,36 +133,6 @@ const App = () => {
       
     </Container>
   );
-};
-
-const Plates = ({ plates, position } : { plates: OlympicPlate[], position: "l" | "r" }) => {
-  const sortRight = (l: OlympicPlate, r: OlympicPlate) => {
-    if(l.value > r.value) return -1;
-    else if(l.value < r.value) return 1;
-    else return 0;
-  };
-
-  const sortLeft = (l: OlympicPlate, r: OlympicPlate) => {
-    if(l.value > r.value) return 1;
-    else if(l.value < r.value) return -1;
-    else return 0;
-  };
-
-  const sortFunc = position === "l" ? sortLeft : sortRight;
-
-  const sortedPlates : OlympicPlate[] = plates.sort(sortFunc);
-
-  return (
-    <Stack direction="horizontal" className={`${position === "l" ? "left-plates" : ""}`} gap={0}>
-    {sortedPlates.map((p, ix) => (
-      <Plate plate={p} key={ix} />
-    ))}
-    </Stack>
-  );
-};
-
-const Plate = ({ plate } : {plate: OlympicPlate}) => {
-  return (<div className={`plate ${plate.color} ${plate.value < 10 ? "small" : ""}`}>{plate.name}</div>)
 };
 
 export default App
