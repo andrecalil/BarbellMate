@@ -44,5 +44,5 @@ jobs:
     - run: npm run build --if-present
   
   deploy:
-    - name: Deploy React to GitHub Pages
-    - uses: bitovi/github-actions-react-to-ghp@v1.2.0
+  
+    uses: bitovi/github-actions-react-to-ghp@v1.2.0
